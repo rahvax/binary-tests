@@ -1,51 +1,66 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "binary.h"
-/* Create a Binary File */
-int writeBinary(const char *filename, uint8_t *bytes, size_t size) {
+
+/* Escrever o arquivo binário */
+int writeBinary(const char *filename, uint8_t *buffer, size_t count) {
   FILE *fp = fopen(filename, "wb");
+
   if (!fp) {
-    perror("[x]: erro ao criar o binário:");
+    perror("[x] erro ao criar arquivo: ");
+    return -1;
+  } else if (fwrite(buffer, sizeof(uint8_t), count, fp) != count) {
+    perror("[x] erro ao escrever dados no arquivo: ");
+    fclose(fp);
     return -1;
   }
-  fwrite(bytes, sizeof(uint8_t), size, fp);
+
   fclose(fp);
   return 0;
 }
 
-/* Read a Binary File*/
-int readBinary(const char *filename) {
+/* Ler o arquivo binário */
+int readBinary(const char *filename, size_t count) {
   FILE *fp = fopen(filename, "rb");
-  uint8_t byte;
-  int byteIndex = 0;
+
   if (!fp) {
-    
-    perror("[x]: erro ao tentar ler o arquivo:");
+    perror("[x] erro ao ler o arquivo: ");
     return -1;
   }
-  
-  while (fread(&byte, sizeof(uint8_t), 1, fp) == 1) {
-    printf("-> byte: %d: 0x%02X\n", byteIndex, byte);
-    printf("-> ativas:");
-    if (byte & 0x80)
-      printf("128 ");
-    if (byte & 0x40)
-      printf("64 ");
-    if (byte & 0x20)
-      printf("32 ");
-    if (byte & 0x10)
-      printf("16 ");
-    if (byte & 0x08)
-      printf("8 ");
-    if (byte & 0x04)
-      printf("4 ");
-    if (byte & 0x02)
-      printf("2 ");
-    if (byte & 0x01)
-      printf("1 ");
-    printf("\n");
-    byteIndex++;
+
+  printf("\n[=] leitura de %s\n", filename);
+  for (size_t x = 0; x < count; x++) {
+    uint8_t byte;
+    if (fread(&byte, sizeof(uint8_t), 1, fp) != 1) {
+      perror("[x] erro ao ler dentro do arquivo: ");
+      fclose(fp);
+      return -1;
+    }
+    printf("-> %3zu: ", x);
+    showBinary(byte);
+    putchar('\n');
   }
+
   fclose(fp);
   return 0;
+}
+
+/* Imprimir formato convencional do binário */
+void showBinary(uint8_t byte) {
+  for (register int x = BSIZE - 1; x >= 0; x--)
+    putchar((byte & (1u << x)) ? '1' : '0');
+}
+
+/* Ler decimais para servirem de prompt */
+uint32_t setUint (const char *message, uint32_t min, uint32_t max) {
+  uint32_t value = 0;
+  int scanned = 0;
+
+  do {
+    printf("%s (%u-%u): ", message, min, max);
+    scanned = scanf("%u", &value);
+    while (getchar() != '\n');
+  } while (scanned != 1 || value < min || value > max);
+
+  return value;
 }
