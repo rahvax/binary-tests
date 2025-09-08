@@ -1,5 +1,5 @@
 DIR  = build
-NAME = omega
+NAME = binary
 
 compile: src/main.c src/binary.c | $(DIR)
 	gcc -o $(DIR)/$(NAME) src/main.c src/binary.c
