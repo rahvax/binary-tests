@@ -2,7 +2,7 @@
 #define _BINARY_H
 #include <stdio.h>
 #include <stdint.h>
-#define BSIZE 8
+#define BSIZE 7
 /* Escrever o arquivo binário */
 int writeBinary (const char *filename, uint8_t *buffer, size_t count);
 /* Ler o arquivo binário */

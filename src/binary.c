@@ -47,8 +47,9 @@ int readBinary(const char *filename, size_t count) {
 
 /* Imprimir formato convencional do binário */
 void showBinary(uint8_t byte) {
-  for (register int x = BSIZE - 1; x >= 0; x--)
+  for (register int x = BSIZE; x >= 0; x--)
     putchar((byte & (1u << x)) ? '1' : '0');
+  putchar('\n');
 }
 
 /* Ler decimais para servirem de prompt */
