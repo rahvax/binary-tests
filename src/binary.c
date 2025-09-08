@@ -38,7 +38,6 @@ int readBinary(const char *filename, size_t count) {
     }
     printf("-> %3zu: ", x);
     showBinary(byte);
-    putchar('\n');
   }
 
   fclose(fp);
