@@ -5,7 +5,6 @@
 #include "binary.h"
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
 #define FILETEST "teste.dat"
 
 int main(void) {
